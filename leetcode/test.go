@@ -8,5 +8,7 @@ func flipEquiv(root1 *TreeNode, root2 *TreeNode) bool {
     }
     if root1.Val == root2.Val 
 
-	return flipEquiv(root1.Left, root2.Left)
+    return flipEquiv(root1.Left, root2.Left)
+    error.Error()
 }
+error.Error()
