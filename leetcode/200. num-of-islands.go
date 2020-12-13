@@ -93,3 +93,70 @@ func bfs(m, n int, grid [][]byte) {
 		}
 	}
 }
+
+// UnionFind
+func numIslands(grid [][]byte) int {
+	m, n := len(grid), len(grid[0])
+	u := new(UnionFind)
+	u.Init(m * n)
+	countZero := 0
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if grid[i][j] == '1' {
+				if i+1 < m && grid[i+1][j] == '1' {
+					u.Union(n*i+j, n*(i+1)+j)
+				}
+				if j+1 < n && grid[i][j+1] == '1' {
+					u.Union(n*i+j, n*i+j+1)
+				}
+			} else {
+				countZero++
+			}
+		}
+	}
+	return u.count - countZero
+}
+
+type UnionFind struct {
+	count  int
+	parent []int
+	rank   []int
+}
+
+func (u *UnionFind) Init(count int) {
+	u.count = count
+	u.parent = make([]int, count)
+	for i := 0; i < count; i++ {
+		u.parent[i] = i
+	}
+	u.rank = make([]int, count)
+}
+
+func (u *UnionFind) Find(node int) int {
+	for u.parent[node] != node {
+		u.parent[node] = u.parent[u.parent[node]]
+		node = u.parent[node]
+	}
+
+	return node
+}
+
+func (u *UnionFind) Union(node1, node2 int) {
+	root1, root2 := u.Find(node1), u.Find(node2)
+	if root1 == root2 {
+		return
+	}
+	if u.rank[root1] > u.rank[root2] {
+		u.parent[root2] = root1
+	} else if u.rank[root1] < u.rank[root2] {
+		u.parent[root1] = root2
+	} else {
+		u.parent[root1] = root2
+		u.rank[root2]++
+	}
+	u.count--
+}
+
+func (u *UnionFind) Connected(node1, node2 int) bool {
+	return u.Find(node1) == u.Find(node2)
+}

@@ -1,6 +1,9 @@
 package leetcode
 
-import "strings"
+import (
+	"math/bits"
+	"strings"
+)
 
 var res [][]string
 var col map[int]bool
@@ -40,6 +43,38 @@ func dfs(row, n int, path []int) {
 		// reverse
 		path = path[:len(path)-1]
 	}
+}
+
+// 位解法
+var res [][]string
+
+func solveNQueens(n int) [][]string {
+	res = [][]string{}
+	dfs(0, n, 0, 0, 0, []int{})
+	return res
+}
+
+func dfs(row, n, cols, pie, na int, path []int) {
+	if row == n {
+		res = append(res, generateBoard(n, path))
+	}
+	availablePositions := (1<<n - 1) & (^(cols | pie | na))
+	for availablePositions > 0 {
+		position := availablePositions & (-availablePositions)
+		availablePositions = availablePositions & (availablePositions - 1)
+		col := bits.OnesCount((uint(position - 1)))
+		path = append(path, col)
+		dfs(row+1, n, cols|position, (pie|position)<<1, (na|position)>>1, path)
+		path = path[:len(path)-1]
+	}
+}
+
+func generateBoard(n int, path []int) (ans []string) {
+	for _, v := range path {
+		str := strings.Repeat(".", v) + "Q" + strings.Repeat(".", n-v-1)
+		ans = append(ans, str)
+	}
+	return ans
 }
 func generate(path []int, n int) []string {
 	ans := []string{}

@@ -17,9 +17,7 @@ func minDistance(word1 string, word2 string) int {
 			} else {
 				dp[j] = min(cur, dp[j], dp[j-1]) + 1
 			}
-
 		}
-
 	}
 	return dp[len(word1)]
 }
